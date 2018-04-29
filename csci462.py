@@ -1,20 +1,20 @@
 import sympy
 import sys
 
-def enc(m, t):
-    p = [0] + [ord(c) for c in m]
+def enc(m, t, MOD=127):
+    p = [0] + [ord(c) % MOD for c in m]
     l = [0 for _ in xrange(len(p))]
-    t = [ord(c) for c in t]
+    t = [ord(c) % MOD for c in t]
     assert len(p) == len(l)
 
     x = central_map_enc(p, t, l)
     return x[1:]
 
-def dec(c, t):
-    c = [0] + [ord(y) for y in c]
+def dec(c, t, MOD=127):
+    c = [0] + [ord(y) % MOD for y in c]
     p = [0 for _ in xrange(len(c))]
     l = [0 for _ in xrange(len(c))]
-    t = [ord(y) for y in t]
+    t = [ord(y) % MOD for y in t]
     assert len(p) == len(l) == len(c)
 
     x = central_map_dec(c, p, t, l)
