@@ -1,15 +1,26 @@
 <html>
 <title> Introduction to Cryptography - Project </title>
 <body>
-    <form method="POST">
-        Plaintext/Ciphertext here:
-        <input id="data" type="file" name="data">
+    ENCRYPT
+    <form method="POST" action="/encrypt" enctype="multipart/form-data">
+        Plaintext:
+        <input id="data-enc" type="file" name="data">
         <br><br>
         Password:
-        <input id="password" type="text" name="password">
+        <input id="password-enc" type="text" name="password">
         <br><br>
-        <input id="enc" type="button" value="Encrypt" formaction="/encrypt">
-        <input id="dec" type="button" value="Decrypt" formaction="/decrypt">
+        <input id="enc" type="submit" value="Encrypt">
+    </form>
+    <br><br><br>
+    DECRYPT (Please rename your file to the correct extension of the original file)
+    <form method="POST" action="/decrypt" enctype="multipart/form-data">
+        Ciphertext:
+        <input id="data-dec" type="file" name="data">
+        <br><br>
+        Password:
+        <input id="password-dec" type="text" name="password">
+        <br><br>
+        <input id="dec" type="submit" value="Decrypt">
     </form>
 </body>
 </html>
