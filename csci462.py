@@ -1,24 +1,57 @@
-import sympy
+import numpy
 import sys
 
+A = None
+
+def make_matrix(p, t, mode=1):
+    global A
+    if mode == 1: # Identity matrix
+        A = [[0 for _ in xrange(len(p))] for _ in xrange(len(p))]
+        for i in xrange(len(p)):
+            A[i][i] = 1
+    elif mode == 2: # Deriving the matrix from the password, not being used, in development
+        A = [[0 for _ in xrange(len(p))] for _ in xrange(len(p))]
+        for i in xrange(len(t)):
+            idx = i % len(p)
+            A[idx][0] = ord(t[i]) % 2
+
+def matrix_multiplication(A, B, MOD=127):
+    C = [0 for _ in xrange(len(A))]
+    for i in xrange(1): # A vector
+        for j in xrange(len(B[0])):
+            for k in xrange(len(A)):
+                C[j] += A[k] * B[k][j]
+                C[j] %= MOD
+    return C
+
 def enc(m, t, MOD=127):
-    p = [0] + [ord(c) % MOD for c in m]
+    global A
+    make_matrix(m, t)
+    p = [ord(c) % MOD for c in m]
+    p = matrix_multiplication(p, A)
+    p = [0] + p
     l = [0 for _ in xrange(len(p))]
     t = [ord(c) % MOD for c in t]
     assert len(p) == len(l)
 
-    x = central_map_enc(p, t, l)
-    return x[1:]
+    x = central_map_enc(p, t, l)[1:]
+    x = matrix_multiplication(x, A)
+    return x
 
 def dec(c, t, MOD=127):
-    c = [0] + [ord(y) % MOD for y in c]
+    global A
+    make_matrix(c, t)
+    c = [ord(y) % MOD for y in c]
+    c = matrix_multiplication(c, A)
+    c = [0] + c
     p = [0 for _ in xrange(len(c))]
     l = [0 for _ in xrange(len(c))]
     t = [ord(y) % MOD for y in t]
     assert len(p) == len(l) == len(c)
 
-    x = central_map_dec(c, p, t, l)
-    return x[1:]
+    x = central_map_dec(c, p, t, l)[1:]
+    x = matrix_multiplication(x, A)
+    return x
 
 def central_map_enc(p, t, l, MOD=127):
     for i in xrange(len(t)):
